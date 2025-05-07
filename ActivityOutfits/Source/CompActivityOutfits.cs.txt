@@ -1,0 +1,24 @@
+using Verse;
+using RimWorld;
+using System.Collections.Generic;
+
+namespace ActivityOutfits
+{
+    public class CompActivityOutfits : ThingComp
+    {
+        public Dictionary<TimeAssignmentDef, ApparelPolicy> outfitMap = new();
+
+        public override void PostExposeData()
+        {
+            Scribe_Collections.Look(ref outfitMap, "outfitMap", LookMode.Def, LookMode.Reference);
+        }
+    }
+
+    public class CompProperties_ActivityOutfits : CompProperties
+    {
+        public CompProperties_ActivityOutfits()
+        {
+            this.compClass = typeof(CompActivityOutfits);
+        }
+    }
+}

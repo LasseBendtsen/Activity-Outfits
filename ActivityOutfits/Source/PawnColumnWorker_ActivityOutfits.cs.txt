@@ -1,0 +1,44 @@
+using UnityEngine;
+using Verse;
+using RimWorld;
+using System.Collections.Generic;
+
+namespace ActivityOutfits
+{
+    public class PawnColumnWorker_ActivityOutfits : PawnColumnWorker
+    {
+        public override void DoCell(Rect rect, Pawn pawn, PawnTable table)
+        {
+            var comp = pawn.TryGetComp<CompActivityOutfits>();
+            if (comp == null) return;
+
+            if (Widgets.ButtonText(rect, "Set Outfits"))
+            {
+                List<FloatMenuOption> menu = new();
+
+                foreach (var timeDef in DefDatabase<TimeAssignmentDef>.AllDefsListForReading)
+                {
+                    string current = comp.outfitMap.TryGetValue(timeDef, out var o) ? o.label : "None";
+                    menu.Add(new FloatMenuOption($"{timeDef.LabelCap}: {current}", () =>
+                    {
+                        List<FloatMenuOption> subOptions = new();
+                        foreach (var outfit in Current.Game.outfitDatabase.AllOutfits)
+                        {
+                            subOptions.Add(new FloatMenuOption(outfit.label, () =>
+                            {
+                                comp.outfitMap[timeDef] = outfit;
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(subOptions));
+                    }));
+                }
+
+                Find.WindowStack.Add(new FloatMenu(menu));
+            }
+        }
+
+        public override int GetMinWidth(PawnTable table) => 100;
+        public override int GetOptimalWidth(PawnTable table) => 120;
+        public override int Compare(Pawn a, Pawn b) => 0;
+    }
+}

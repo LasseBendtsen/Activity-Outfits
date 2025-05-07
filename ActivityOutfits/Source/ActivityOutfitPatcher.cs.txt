@@ -1,0 +1,27 @@
+using HarmonyLib;
+using Verse;
+using RimWorld;
+
+namespace ActivityOutfits
+{
+    [StaticConstructorOnStartup]
+    public static class ActivityOutfitPatcher
+    {
+        static ActivityOutfitPatcher()
+        {
+            new Harmony("com.Aalummi.activityoutfits").PatchAll();
+        }
+
+        [HarmonyPatch(typeof(Pawn), "SpawnSetup")]
+        public static class Patch_Pawn_SpawnSetup
+        {
+            public static void Postfix(Pawn __instance)
+            {
+                if (__instance.RaceProps.Humanlike && __instance.GetComp<CompActivityOutfits>() == null)
+                {
+                    __instance.AllComps.Add(new CompActivityOutfits());
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,42 @@
+using Verse;
+using RimWorld;
+
+namespace ActivityOutfits
+{
+    public class ActivityOutfitManager : Mod
+    {
+        public ActivityOutfitManager(ModContentPack content) : base(content)
+        {
+            LongEventHandler.QueueLongEvent(Init, "InitializeActivityOutfits", false, null);
+        }
+
+        private void Init()
+        {
+            GameComponentUtility.StartedNewGame += () => Current.Game.GetComponent<ActivityOutfitTracker>();
+            GameComponentUtility.LoadedGame += () => Current.Game.GetComponent<ActivityOutfitTracker>();
+        }
+    }
+
+    public class ActivityOutfitTracker : GameComponent
+    {
+        public ActivityOutfitTracker(Game game) { }
+
+        public override void GameComponentTick()
+        {
+            if (Find.TickManager.TicksGame % 2500 != 0) return;
+
+            foreach (Pawn pawn in PawnsFinder.AllMaps_FreeColonists)
+            {
+                var comp = pawn.TryGetComp<CompActivityOutfits>();
+                if (comp == null || pawn.timetable == null) continue;
+
+                var currentAssignment = pawn.timetable.CurrentAssignment;
+                if (comp.outfitMap.TryGetValue(currentAssignment, out var policy))
+                {
+                    if (pawn.outfits.CurrentApparelPolicy != policy)
+                        pawn.outfits.CurrentApparelPolicy = policy;
+                }
+            }
+        }
+    }
+}

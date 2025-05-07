@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PawnTableDefs>
+  <PawnTableDef>
+    <defName>Assign</defName>
+    <columns>
+      <li Class="RimWorld.PawnColumnWorker_Outfit" />
+      <li Class="ActivityOutfits.PawnColumnWorker_ActivityOutfits" />
+    </columns>
+  </PawnTableDef>
+</PawnTableDefs>
